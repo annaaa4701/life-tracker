@@ -1,0 +1,19 @@
+{
+  "name": "@life-tracker/worker",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "tsc --noEmit",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260401.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.14.1"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}

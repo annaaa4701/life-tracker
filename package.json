@@ -1,0 +1,16 @@
+{
+  "name": "life-tracker",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w @life-tracker/web",
+    "build:web": "npm run build -w @life-tracker/web",
+    "dev:worker": "npm run dev -w @life-tracker/worker",
+    "build:worker": "npm run build -w @life-tracker/worker",
+    "build": "npm run build:web && npm run build:worker"
+  }
+}

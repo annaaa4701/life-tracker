@@ -1,0 +1,6 @@
+name = "life-tracker-worker"
+main = "src/index.ts"
+compatibility_date = "2026-04-05"
+
+[vars]
+NOTION_VERSION = "2022-06-28"

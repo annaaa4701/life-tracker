@@ -7,6 +7,26 @@ import { KnowledgeScreen } from "./screens/KnowledgeScreen"
 import { TodayScreen } from "./screens/TodayScreen"
 import { TAB_ITEMS, type TabKey } from "./types"
 
+const APP_BASE = (import.meta.env.BASE_URL || "/").replace(/\/?$/, "/")
+
+const stripAppBase = (pathname: string): string => {
+  if (APP_BASE === "/") {
+    return pathname || "/"
+  }
+
+  if (pathname.startsWith(APP_BASE)) {
+    const stripped = pathname.slice(APP_BASE.length - 1)
+    return stripped.startsWith("/") ? stripped : `/${stripped}`
+  }
+
+  return pathname || "/"
+}
+
+const toAppPath = (pathname: string): string => {
+  const normalized = pathname.startsWith("/") ? pathname.slice(1) : pathname
+  return APP_BASE === "/" ? `/${normalized}` : `${APP_BASE}${normalized}`
+}
+
 const tabFromPath = (pathname: string): TabKey => {
   const found = TAB_ITEMS.find((item) => item.path === pathname)
   return found ? found.key : "today"
@@ -28,17 +48,26 @@ const titleFromTab = (tab: TabKey): string => {
 }
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<TabKey>(() => tabFromPath(window.location.pathname))
+  const [activeTab, setActiveTab] = useState<TabKey>(() => tabFromPath(stripAppBase(window.location.pathname)))
 
   useEffect(() => {
-    if (window.location.pathname === "/") {
-      window.history.replaceState({}, "", "/today")
+    const redirectPath = window.sessionStorage.getItem("lt-spa-redirect")
+    if (redirectPath) {
+      window.sessionStorage.removeItem("lt-spa-redirect")
+      const targetPath = stripAppBase(redirectPath)
+      window.history.replaceState({}, "", toAppPath(targetPath))
+      setActiveTab(tabFromPath(targetPath))
+      return
+    }
+
+    if (stripAppBase(window.location.pathname) === "/") {
+      window.history.replaceState({}, "", toAppPath("/today"))
       setActiveTab("today")
       return
     }
 
     const onPopState = () => {
-      setActiveTab(tabFromPath(window.location.pathname))
+      setActiveTab(tabFromPath(stripAppBase(window.location.pathname)))
     }
 
     window.addEventListener("popstate", onPopState)
@@ -59,7 +88,7 @@ export function App() {
       return
     }
 
-    window.history.pushState({}, "", target.path)
+    window.history.pushState({}, "", toAppPath(target.path))
     setActiveTab(nextTab)
   }
 

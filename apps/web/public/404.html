@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Life Tracker</title>
+    <script>
+      (function () {
+        var path = window.location.pathname + window.location.search + window.location.hash;
+        try {
+          window.sessionStorage.setItem("lt-spa-redirect", path);
+        } catch (error) {
+          // Ignore storage errors and still try to move back to the app root.
+        }
+
+        var current = window.location.pathname;
+        var base = current.slice(0, current.lastIndexOf("/") + 1);
+        window.location.replace(base);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
